@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import List, Dict, ArrayLike
+from typing import List, Dict
+
 import torch
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -58,6 +59,9 @@ class ZeroshotClassifier:
             str: text ready to be fed into the model
         """
         # calculate the length without format placeholders
+        if "{text}" not in prompt_pattern:
+            raise ValueError("The prompt must contain `{text}` placeholder")
+
         stripped_pattern = prompt_pattern.replace("{text}", "").replace("{labels}", "")
         pattern_length = len(self.tokenizer(stripped_pattern)["input_ids"])
         max_text_length = self.max_input_length - pattern_length
@@ -76,7 +80,7 @@ class ZeroshotClassifier:
         return prompt_pattern.format(text=text)
 
     @staticmethod
-    def _get_label_probas(probas: ArrayLike, label_mapping: Dict[str, int]) -> Dict[str, float]:
+    def _get_label_probas(probas: List[float], label_mapping: Dict[str, int]) -> Dict[str, float]:
         """Get label probabilities
         
         Get probabilities of the tokens associated with the first 
@@ -97,7 +101,7 @@ class ZeroshotClassifier:
         
         return label_probas_normalized
 
-    def _get_next_token_probabilites(self, text: str) -> ArrayLike:
+    def _get_next_token_probabilites(self, text: str) -> List[float]:
         """Perform the forward pass on the model and return the softmax"""
         tokenized = self.tokenizer(
             text,
