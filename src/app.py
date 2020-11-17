@@ -35,3 +35,4 @@ if st.button("Классифицировать"):
         st.write("*ruGPT3:* я думаю, что этот текст относится к категории _{}_".format(clf_result.label))
     else:
         st.write("*ruGPT3:* я не знаю точно, к чему отнести этот текст")
+    st.write(clf_result)
