@@ -1,3 +1,6 @@
+"""
+Evaluate zero-shot ruGPT3 transfer on NPlus1 article rubric prediction
+"""
 import argparse
 from pathlib import Path
 from typing import Union
@@ -37,7 +40,7 @@ def load_text_data(data_path: Path):
 def load_metadata(data_path: Path):
     return pd.read_csv(data_path/"newmetadata.csv", sep="\t")
 
-def get_data_sample(data_path, sample_size, seed):
+def get_data_sample(data_path: Path, sample_size: int, seed: int):
     texts = load_text_data(data_path)
     meta = load_metadata(data_path)
     data = texts.merge(meta, on="textid")
@@ -66,10 +69,10 @@ def evaluate(data_path: Path, model_path: Union[str,Path], sample_size: int=0, s
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("data_path")
-    parser.add_argument("model_path")
-    parser.add_argument("sample_size", type=int)
-    parser.add_argument("seed", type=int)
+    parser.add_argument("data_path", help="Path to NPlus1 corpus")
+    parser.add_argument("model_path", help="Path to fetched model and tokenizer")
+    parser.add_argument("sample_size", type=int, help="Size fo sample to evaluate on")
+    parser.add_argument("seed", type=int, help="Random seed")
     args = parser.parse_args()
     evaluate(Path(args.data_path), args.model_path, args.sample_size, args.seed)
 

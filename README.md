@@ -51,6 +51,8 @@ it was never provided any supervision. Unfortunately, there aren't any widely us
 
 To use the classifier interactively, run app.py with streamlit. The app expects the model fetched to `./model`
 
+Works best with `large` model.
+
 ```
 streamlit run ./src/app.py
 ```
